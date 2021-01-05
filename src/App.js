@@ -9,7 +9,7 @@ const Wrapper = styled.div`
 function App() {
   return (
     <Wrapper>
-      <iframe width="100%" height="100%" src="https://docs.google.com/spreadsheets/d/15s8PgJ8uZNcUsUEvM2gO2Si3fCJ4spwsAqh6f0xxJGM/edit?ouid=110939666120885358976&usp=sheets_home&ths=true"></iframe>
+      <iframe width="100%" height="100%" src="https://docs.google.com/spreadsheets/d/15s8PgJ8uZNcUsUEvM2gO2Si3fCJ4spwsAqh6f0xxJGM/edit#gid=1059827729" title="Death Pool"></iframe>
     </Wrapper>
   );
 }
