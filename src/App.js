@@ -6,11 +6,60 @@ const Wrapper = styled.div`
     width: 100vw;
 `;
 
+const PAGES = {
+  SPREADSHEET: 'SPREADSHEET',
+  IMAGES: 'IMAGES',
+}
+
+const Router = ({ page, children }) => {
+  switch (page) {
+    case PAGES.SPREADSHEET:
+      return <SpreadSheet />;
+
+    default:
+      return children ;
+  }
+};
+
+const SpreadSheet = () => {
+  return <Wrapper>
+  <iframe width="100%" height="100%" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRzLhwx8OsdXovrGZhd8TNPHMx67yUvBTb4aUSz88JTimVsAhuNJ-GnoRFpMGc-k1U4Ec4rDmQgWLy3/pubhtml?widget=true&amp;headers=false"></iframe>
+</Wrapper>;
+}
+
+const NavItem = styled.div`
+  height: 50px;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const Nav = styled.div`
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background: green;
+  align-items: center;
+`;
+
+
+
+
+
 function App() {
+  const [page, setPage] = React.useState('home');
+
   return (
-    <Wrapper>
-      <iframe width="100%" height="100%" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRzLhwx8OsdXovrGZhd8TNPHMx67yUvBTb4aUSz88JTimVsAhuNJ-GnoRFpMGc-k1U4Ec4rDmQgWLy3/pubhtml?widget=true&amp;headers=false"></iframe>
-    </Wrapper>
+
+    <Router page={page}>
+      <Nav>
+        <NavItem onClick={() => setPage(PAGES.SPREADSHEET)}> SpreadSheet </NavItem>
+        <NavItem onClick={() => setPage(PAGES.IMAGES)}> Christmast Images </NavItem>
+      </Nav>
+    </Router>
+
   );
 }
 
