@@ -142,7 +142,7 @@ export default function WinnerCarousel({ year, onClose, winnerImageMap }) {
         <CarouselImageWrap>
           {index > 0 && (
             <CarouselNavButton
-              style={{ left: '12px' }}
+              style={{ left: '12px', zIndex: 10000 }}
               onClick={goPrev}
               aria-label="Previous photo"
             >
@@ -150,7 +150,11 @@ export default function WinnerCarousel({ year, onClose, winnerImageMap }) {
             </CarouselNavButton>
           )}
           {index < images.length - 1 && (
-            <CarouselNavButton style={{ right: '12px' }} onClick={goNext} aria-label="Next photo">
+            <CarouselNavButton
+              style={{ right: '12px', zIndex: 10000 }}
+              onClick={goNext}
+              aria-label="Next photo"
+            >
               ›
             </CarouselNavButton>
           )}
