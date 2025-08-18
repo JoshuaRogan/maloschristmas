@@ -716,10 +716,58 @@ export const CarouselCloseButton = styled.button`
   }
 `;
 export const CarouselYear = styled.div`
-  font-size: 0.8rem;
-  letter-spacing: 1px;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: #ffe6a8;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 0.45rem 0.95rem 0.55rem;
+  font-size: clamp(1.9rem, 4vw, 3.15rem);
+  font-weight: 800;
+  letter-spacing: 2px;
+  line-height: 1;
+  color: #fff;
+  background:
+    radial-gradient(circle at 18% 25%, rgba(255, 255, 255, 0.18), transparent 65%),
+    linear-gradient(135deg, rgba(18, 70, 40, 0.75), rgba(14, 55, 60, 0.7));
+  backdrop-filter: blur(8px) brightness(1.15) saturate(1.15);
+  -webkit-backdrop-filter: blur(8px) brightness(1.15) saturate(1.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 18px;
+  box-shadow:
+    0 10px 28px -12px rgba(0, 0, 0, 0.75),
+    0 2px 6px -2px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  text-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.7),
+    0 0 12px rgba(255, 210, 90, 0.35);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: none; /* purely informational */
+  user-select: none;
+  &:after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ffe8a3, rgba(255, 232, 163, 0));
+    box-shadow: 0 0 12px 4px rgba(255, 210, 90, 0.4);
+    animation: pulseYear 3.8s ease-in-out infinite;
+    opacity: 0.85;
+  }
+  @keyframes pulseYear {
+    0%,
+    100% {
+      transform: scale(0.9);
+      opacity: 0.75;
+    }
+    50% {
+      transform: scale(1.15);
+      opacity: 1;
+    }
+  }
+  @media (max-width: 600px) {
+    padding: 0.4rem 0.8rem 0.5rem;
+    border-radius: 14px;
+    letter-spacing: 1.2px;
+  }
 `;

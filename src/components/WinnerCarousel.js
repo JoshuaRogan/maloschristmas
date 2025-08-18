@@ -204,9 +204,7 @@ export default function WinnerCarousel({ year, onClose, winnerImageMap }) {
               )}
             </>
           )}
-          <CarouselYear style={{ position: 'absolute', left: 16, top: 14 }}>
-            {current.year}
-          </CarouselYear>
+          <CarouselYear aria-live="polite">{current.year}</CarouselYear>
           <CarouselCloseButton onClick={onClose} aria-label="Close carousel">
             ×
           </CarouselCloseButton>
