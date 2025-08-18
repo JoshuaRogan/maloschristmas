@@ -11,6 +11,7 @@ import {
   YearGrid,
   Footer,
   Loading,
+  AllTimeTotalBar,
 } from './components/styled';
 // Data / hooks
 import { parseCsv, sanitizeRow } from './utils/csv';
@@ -65,6 +66,10 @@ function App() {
   }, []);
 
   const giftsYearTotals = useMemo(() => (gifts ? buildYearTotals(gifts) : []), [gifts]);
+  const allTimeTotalGifts = useMemo(
+    () => giftsYearTotals.reduce((sum, y) => sum + (y.total || 0), 0),
+    [giftsYearTotals],
+  );
   const allYears = useMemo(() => giftsYearTotals.map((d) => d.year), [giftsYearTotals]);
   useEffect(() => {
     if (allYears.length && !allYears.includes(year)) setYear(allYears[allYears.length - 1]);
@@ -146,6 +151,16 @@ function App() {
   return (
     <Wrapper>
       <Title>Malos Family Christmas Gift & Guess Dashboard</Title>
+      <AllTimeTotalBar>
+        <span className="emoji" role="img" aria-label="Christmas Tree">
+          🎄
+        </span>
+        <div className="label">All-Time Gifts</div>
+        <strong>{allTimeTotalGifts.toLocaleString()}</strong>
+        <span className="emoji" role="img" aria-label="Gift">
+          🎁
+        </span>
+      </AllTimeTotalBar>
       <TotalGiftsLineChart
         data={giftsYearTotals}
         year={year}

@@ -1,5 +1,96 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
+// Festive shimmer animation
+const shimmer = keyframes`
+  0% { transform: translateX(-60%); opacity: 0.15; }
+  50% { opacity: 0.35; }
+  100% { transform: translateX(120%); opacity: 0; }
+`;
+const sparkle = keyframes`
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.35); }
+`;
+export const AllTimeTotalBar = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  padding: 0.85rem 1.6rem 0.9rem;
+  margin: 0 auto 1.05rem;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.15), transparent 70%),
+    linear-gradient(135deg, #1c4d30, #144026 55%, #123325);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 8px 22px -10px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  overflow: hidden;
+  max-width: 760px;
+  .label {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    opacity: 0.8;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  strong {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 1px;
+    background: linear-gradient(90deg, #ffe8a3, #fff5d2 45%, #ffe8a3 90%);
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+    position: relative;
+  }
+  .emoji {
+    font-size: 1.55rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -35%;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0.25) 45%,
+      rgba(255, 255, 255, 0)
+    );
+    animation: ${shimmer} 5.5s linear infinite;
+    pointer-events: none;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fff, rgba(255, 255, 255, 0));
+    top: 14px;
+    right: 22px;
+    opacity: 0.65;
+    animation: ${sparkle} 3.4s ease-in-out infinite 0.6s;
+    pointer-events: none;
+  }
+  @media (max-width: 700px) {
+    strong {
+      font-size: 1.9rem;
+    }
+    padding: 0.75rem 1.2rem 0.8rem;
+  }
+`;
 export const Wrapper = styled.div`
   min-height: 100vh;
   width: 100%;
