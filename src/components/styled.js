@@ -471,6 +471,7 @@ export const Table = styled.table`
   th,
   td {
     padding: 6px 8px;
+    vertical-align: top;
   }
   thead tr {
     position: sticky;
@@ -485,6 +486,29 @@ export const Table = styled.table`
     letter-spacing: 0.5px;
     text-transform: uppercase;
     opacity: 0.9;
+  }
+  /* Generic alignment utility classes */
+  th.table-rank,
+  td.table-rank {
+    text-align: center;
+    width: 44px;
+  }
+  th.table-person,
+  td.table-person {
+    text-align: left;
+  }
+  th.table-num,
+  td.table-num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  th.table-text,
+  td.table-text {
+    text-align: left;
+  }
+  th + th,
+  td + td {
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
   }
   tbody tr:nth-child(even) {
     background: rgba(255, 255, 255, 0.035);
@@ -501,6 +525,7 @@ export const Table = styled.table`
   tbody tr.highlight-closer-over {
     background: linear-gradient(90deg, #b59f12, #8a7a10);
   }
+  /* Profile table retains its extra tweaks */
   &.profile-table {
     th,
     td {

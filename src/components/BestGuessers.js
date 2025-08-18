@@ -99,7 +99,7 @@ export default function BestGuessers({ bestGuessers }) {
         <Table>
           <thead>
             <tr>
-              <th>#</th>
+              <th className="table-rank">#</th>
               <Header label="Person" keyName="person" />
               <Header label="Index" keyName="index" />
               <Header label="Acc%" keyName="accuracy" />
@@ -111,8 +111,8 @@ export default function BestGuessers({ bestGuessers }) {
           <tbody>
             {sorted.map((r) => (
               <tr key={r.person} className={rankMap[r.person] === 1 ? 'highlight' : ''}>
-                <td>{rankMap[r.person]}</td>
-                <td>
+                <td className="table-rank">{rankMap[r.person]}</td>
+                <td className="table-person">
                   <Link
                     to={`/profile/${encodeURIComponent(r.person)}`}
                     style={{ color: 'inherit', textDecoration: 'none' }}
@@ -121,16 +121,18 @@ export default function BestGuessers({ bestGuessers }) {
                   </Link>
                   {rankMap[r.person] === 1 && ' 🥇'}
                 </td>
-                <td>{r.index.toFixed(1)}</td>
-                <td>{(Math.round(r.baseAccuracyPct * 10) / 10).toFixed(1)}</td>
-                <td>{Math.round(r.avgAbsError * 10) / 10}</td>
-                <td>{Math.round(r.medianAbsError * 10) / 10}</td>
-                <td>{r.yearsParticipated}</td>
+                <td className="table-num">{r.index.toFixed(1)}</td>
+                <td className="table-num">
+                  {(Math.round(r.baseAccuracyPct * 10) / 10).toFixed(1)}
+                </td>
+                <td className="table-num">{Math.round(r.avgAbsError * 10) / 10}</td>
+                <td className="table-num">{Math.round(r.medianAbsError * 10) / 10}</td>
+                <td className="table-num">{r.yearsParticipated}</td>
               </tr>
             ))}
             {sorted.length === 0 && (
               <tr>
-                <td colSpan={7} style={{ padding: '6px', opacity: 0.6 }}>
+                <td className="table-text" colSpan={7} style={{ padding: '6px', opacity: 0.6 }}>
                   No eligible guessers (need 6+ years).
                 </td>
               </tr>

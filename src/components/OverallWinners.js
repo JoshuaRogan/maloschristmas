@@ -17,17 +17,17 @@ export default function OverallWinners({ winnersByYear, overallWinCounts }) {
           <Table>
             <thead>
               <tr>
-                <th>#</th>
-                <th>Person</th>
-                <th>Wins</th>
-                <th>Years</th>
+                <th className="table-rank">#</th>
+                <th className="table-person">Person</th>
+                <th className="table-num">Wins</th>
+                <th className="table-text">Years</th>
               </tr>
             </thead>
             <tbody>
               {overallWinCounts.map((r, i) => (
                 <tr key={r.person} className={i === 0 ? 'highlight' : ''}>
-                  <td>{i + 1}</td>
-                  <td>
+                  <td className="table-rank">{i + 1}</td>
+                  <td className="table-person">
                     <Link
                       to={`/profile/${encodeURIComponent(r.person)}`}
                       style={{ color: 'inherit', textDecoration: 'none' }}
@@ -36,8 +36,8 @@ export default function OverallWinners({ winnersByYear, overallWinCounts }) {
                     </Link>
                     {i === 0 && ' 🏆'}
                   </td>
-                  <td>{r.wins}</td>
-                  <td style={{ whiteSpace: 'nowrap' }}>
+                  <td className="table-num">{r.wins}</td>
+                  <td className="table-text" style={{ whiteSpace: 'nowrap' }}>
                     {r.yearsDetailed.map((yObj, idx) => (
                       <span
                         key={yObj.year}
@@ -55,7 +55,7 @@ export default function OverallWinners({ winnersByYear, overallWinCounts }) {
               ))}
               {overallWinCounts.length === 0 && (
                 <tr>
-                  <td colSpan={4} style={{ padding: '6px', opacity: 0.6 }}>
+                  <td className="table-text" colSpan={4} style={{ padding: '6px', opacity: 0.6 }}>
                     No winners yet.
                   </td>
                 </tr>

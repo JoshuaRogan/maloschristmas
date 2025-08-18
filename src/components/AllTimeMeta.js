@@ -193,17 +193,17 @@ export default function AllTimeMeta({ meta }) {
           <Table>
             <thead>
               <tr>
-                <th>#</th>
-                <th>Person</th>
-                <th>Exact</th>
-                <th>Years</th>
+                <th className="table-rank">#</th>
+                <th className="table-person">Person</th>
+                <th className="table-num">Exact</th>
+                <th className="table-text">Years</th>
               </tr>
             </thead>
             <tbody>
               {spotOnDetails.map((r, i) => (
                 <tr key={r.person} className={i === 0 ? 'highlight' : ''}>
-                  <td>{i + 1}</td>
-                  <td>
+                  <td className="table-rank">{i + 1}</td>
+                  <td className="table-person">
                     <Link
                       to={`/profile/${encodeURIComponent(r.person)}`}
                       style={{ color: 'inherit', textDecoration: 'none' }}
@@ -211,8 +211,10 @@ export default function AllTimeMeta({ meta }) {
                       {r.person}
                     </Link>
                   </td>
-                  <td style={{ fontWeight: 600 }}>{r.count}</td>
-                  <td style={{ whiteSpace: 'nowrap' }}>
+                  <td className="table-num" style={{ fontWeight: 600 }}>
+                    {r.count}
+                  </td>
+                  <td className="table-text" style={{ whiteSpace: 'nowrap' }}>
                     {r.years.map((y, idx) => (
                       <span key={y} style={idx === r.years.length - 1 ? {} : {}}>
                         {y}
@@ -224,7 +226,7 @@ export default function AllTimeMeta({ meta }) {
               ))}
               {spotOnDetails.length === 0 && (
                 <tr>
-                  <td colSpan={4} style={{ padding: 6, opacity: 0.6 }}>
+                  <td className="table-text" colSpan={4} style={{ padding: 6, opacity: 0.6 }}>
                     None yet.
                   </td>
                 </tr>
@@ -251,13 +253,13 @@ export default function AllTimeMeta({ meta }) {
             <Table>
               <thead>
                 <tr>
-                  <th>Year</th>
-                  <th>Over Guesser</th>
-                  <th>Guess</th>
-                  <th>Over Diff</th>
-                  <th>Winner Diff</th>
-                  <th>Winners</th>
-                  <th>Total</th>
+                  <th className="table-num">Year</th>
+                  <th className="table-person">Over Guesser</th>
+                  <th className="table-num">Guess</th>
+                  <th className="table-text">Over Diff</th>
+                  <th className="table-num">Winner Diff</th>
+                  <th className="table-text">Winners</th>
+                  <th className="table-num">Total</th>
                 </tr>
               </thead>
               <tbody>
@@ -268,8 +270,8 @@ export default function AllTimeMeta({ meta }) {
                   )
                   .map((r) => (
                     <tr key={`${r.year}-${r.person}`}>
-                      <td>{r.year}</td>
-                      <td>
+                      <td className="table-num">{r.year}</td>
+                      <td className="table-person">
                         <Link
                           to={`/profile/${encodeURIComponent(r.person)}`}
                           style={{ color: 'inherit', textDecoration: 'none' }}
@@ -277,10 +279,14 @@ export default function AllTimeMeta({ meta }) {
                           {r.person}
                         </Link>
                       </td>
-                      <td>{r.guess}</td>
-                      <td style={{ whiteSpace: 'nowrap' }}>over by {r.overDiff}</td>
-                      <td style={{ whiteSpace: 'nowrap' }}>{r.winnerDiff}</td>
-                      <td style={{ whiteSpace: 'nowrap' }}>
+                      <td className="table-num">{r.guess}</td>
+                      <td className="table-text" style={{ whiteSpace: 'nowrap' }}>
+                        over by {r.overDiff}
+                      </td>
+                      <td className="table-num" style={{ whiteSpace: 'nowrap' }}>
+                        {r.winnerDiff}
+                      </td>
+                      <td className="table-text" style={{ whiteSpace: 'nowrap' }}>
                         {r.winners.map((w, idx) => (
                           <span key={w + idx}>
                             <Link
@@ -293,7 +299,7 @@ export default function AllTimeMeta({ meta }) {
                           </span>
                         ))}
                       </td>
-                      <td>{r.total}</td>
+                      <td className="table-num">{r.total}</td>
                     </tr>
                   ))}
               </tbody>

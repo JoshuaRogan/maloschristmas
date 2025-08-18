@@ -24,6 +24,7 @@ import {
   deriveOverallWinCounts,
   deriveBestGuessers,
   deriveAllTimeMeta,
+  deriveAverageRanks,
 } from './utils/data';
 import useWindowWidth from './hooks/useWindowWidth';
 // Components
@@ -37,6 +38,7 @@ import BestGuessers from './components/BestGuessers';
 import WinnerCarousel from './components/WinnerCarousel';
 import { winnerImageMap } from './utils/images';
 import AllTimeMeta from './components/AllTimeMeta';
+import AverageRankLeaderboard from './components/AverageRankLeaderboard';
 
 function App() {
   const [gifts, setGifts] = useState(null);
@@ -138,6 +140,10 @@ function App() {
     () => deriveAllTimeMeta(winnersByYear, gifts, guesses, giftsYearTotals),
     [winnersByYear, gifts, guesses, giftsYearTotals],
   );
+  const averageRanks = useMemo(
+    () => deriveAverageRanks(gifts, guesses, giftsYearTotals),
+    [gifts, guesses, giftsYearTotals],
+  );
 
   const yearIndex = allYears.indexOf(year);
   const prevYear = yearIndex > 0 ? allYears[yearIndex - 1] : null;
@@ -238,6 +244,7 @@ function App() {
       <GroupWrapper>
         <OverallWinners winnersByYear={winnersByYear} overallWinCounts={overallWinCounts} />
         <BestGuessers bestGuessers={bestGuessers} />
+        <AverageRankLeaderboard averageRanks={averageRanks} />
         <AllTimeMeta meta={allTimeMeta} />
       </GroupWrapper>
       <Footer>

@@ -425,3 +425,35 @@ export function deriveAllTimeMeta(winnersByYear, gifts, guesses, giftsYearTotals
     closerOverBeats,
   };
 }
+
+export function deriveAverageRanks(gifts, guesses, giftsYearTotals) {
+  if (!gifts || !guesses || !giftsYearTotals.length) return [];
+  const ranksByPerson = {};
+  giftsYearTotals.forEach(({ year, total }) => {
+    const combined = combinePersonYear(gifts, guesses, year, total || 0);
+    const ordered = combined.filter((r) => r.guess != null); // already sorted closest without going over
+    ordered.forEach((r, idx) => {
+      if (!ranksByPerson[r.person]) ranksByPerson[r.person] = [];
+      ranksByPerson[r.person].push(idx + 1);
+    });
+  });
+  const stats = Object.entries(ranksByPerson).map(([person, ranks]) => {
+    const yearsParticipated = ranks.length;
+    ranks.sort((a, b) => a - b);
+    const avgRankRaw = ranks.reduce((a, b) => a + b, 0) / ranks.length;
+    const avgRank = Math.round(avgRankRaw * 100) / 100; // 2 decimals for stability
+    const medianRank =
+      ranks.length % 2
+        ? ranks[(ranks.length - 1) / 2]
+        : (ranks[ranks.length / 2 - 1] + ranks[ranks.length / 2]) / 2;
+    const bestRank = ranks[0]; // lowest (closest to 1)
+    const worstRank = ranks[ranks.length - 1]; // highest number
+    return { person, yearsParticipated, avgRank, medianRank, bestRank, worstRank };
+  });
+  return stats.sort(
+    (a, b) =>
+      a.avgRank - b.avgRank ||
+      b.yearsParticipated - a.yearsParticipated ||
+      a.person.localeCompare(b.person),
+  );
+}

@@ -19,10 +19,10 @@ export default function YearLeaderboard({ sortedPersonYear, winnerDiff, anyNonOv
             <Table>
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Person</th>
-                  <th>Guess</th>
-                  <th>Result</th>
+                  <th className="table-rank">#</th>
+                  <th className="table-person">Person</th>
+                  <th className="table-num">Guess</th>
+                  <th className="table-text">Result</th>
                 </tr>
               </thead>
               <tbody>
@@ -43,8 +43,8 @@ export default function YearLeaderboard({ sortedPersonYear, winnerDiff, anyNonOv
                       className={rowClass}
                       title={isCloserOver ? 'Closer than winner but went over' : undefined}
                     >
-                      <td>{i + 1}</td>
-                      <td>
+                      <td className="table-rank">{i + 1}</td>
+                      <td className="table-person">
                         <Link
                           to={`/profile/${encodeURIComponent(r.person)}`}
                           style={{ color: 'inherit', textDecoration: 'none' }}
@@ -55,8 +55,8 @@ export default function YearLeaderboard({ sortedPersonYear, winnerDiff, anyNonOv
                         {isWinner && ' 🎯'}
                         {isCloserOver && ' ⚠️'}
                       </td>
-                      <td>{r.guess}</td>
-                      <td>
+                      <td className="table-num">{r.guess}</td>
+                      <td className="table-text">
                         {r.over
                           ? isWinner && !anyNonOver
                             ? `All over – over by ${r.diff}`
