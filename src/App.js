@@ -590,6 +590,31 @@ const CarouselYear = styled.div`
   text-shadow:0 2px 4px rgba(0,0,0,.6);
 `;
 
+// Helper: Netlify image optimization (works locally by falling back to original asset)
+const isNetlifyHost = typeof window !== 'undefined' && (/\.netlify\.app$/.test(window.location.hostname) || /maloschristmas/i.test(window.location.hostname));
+function buildImageUrl(src, { w, h, fit = 'cover', q = 70 } = {}) {
+  if (!src) return '';
+  // Use Netlify on-demand image transforms only on Netlify host
+  if (isNetlifyHost) {
+    let url = `/.netlify/images?url=${encodeURIComponent(src)}`;
+    if (w) url += `&w=${w}`;
+    if (h) url += `&h=${h}`;
+    if (fit) url += `&fit=${fit}`;
+    if (q) url += `&q=${q}`;
+    return url;
+  }
+  // Locally just append query (harmless – dev server ignores it, still caches separately)
+  const params = [];
+  if (w) params.push(`w=${w}`);
+  if (h) params.push(`h=${h}`);
+  if (fit) params.push(`fit=${fit}`);
+  if (q) params.push(`q=${q}`);
+  return params.length ? `${src}?${params.join('&')}` : src;
+}
+function buildSrcSet(src, widths, opts) {
+  return widths.map(w => `${buildImageUrl(src, { ...opts, w })} ${w}w`).join(', ');
+}
+
 function App() {
   const [gifts, setGifts] = useState(null);
   const [guesses, setGuesses] = useState(null);
@@ -799,6 +824,28 @@ function App() {
       .sort((a,b)=> b.year.localeCompare(a.year)), [winnerImageMap]);
   const [showCarousel, setShowCarousel] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
+  // Added optimized winner image src/srcSet
+  const winnerImageOptimized = useMemo(()=>{
+    const src = winnerImageMap[year];
+    if(!src) return null;
+    return {
+      src: buildImageUrl(src, { w: 420, fit: 'inside', q: 75 }),
+      srcSet: buildSrcSet(src, [160, 240, 320, 420, 640], { fit: 'inside', q: 70 }),
+      sizes: '(max-width: 600px) 60vw, 320px'
+    };
+  }, [winnerImageMap, year]);
+  // Added optimized carousel main image
+  const carouselMainImage = useMemo(()=>{
+    if(!carouselImages.length) return null;
+    const current = carouselImages[carouselIndex];
+    const src = current?.src;
+    if(!src) return null;
+    return {
+      src: buildImageUrl(src, { w: 1200, fit: 'inside', q: 80 }),
+      srcSet: buildSrcSet(src, [400, 640, 800, 1000, 1200], { fit: 'inside', q: 75 }),
+      sizes: '(max-width: 900px) 90vw, 1100px'
+    };
+  }, [carouselImages, carouselIndex]);
   const openCarouselForYear = (yr) => {
     const idx = carouselImages.findIndex(i=>i.year === yr);
     setCarouselIndex(idx >=0 ? idx : 0);
@@ -920,7 +967,15 @@ function App() {
           <WinnerHighlight>
             <WinnerImageBox className={winnerImageOrientation} onClick={()=> currentYearWinners.length>0 && winnerImageMap[year] && openCarouselForYear(year)} title={currentYearWinners.length>0 ? 'View winner photos' : undefined} aria-label="Winner photo (open carousel)">
               {currentYearWinners.length>0 && winnerImageMap[year] ? (
-                <WinnerImage src={winnerImageMap[year]} onLoad={onWinnerImgLoad} alt={`${currentYearWinners[0].person} winner ${year}`} />
+                <WinnerImage
+                  src={winnerImageOptimized?.src}
+                  srcSet={winnerImageOptimized?.srcSet}
+                  sizes={winnerImageOptimized?.sizes}
+                  onLoad={onWinnerImgLoad}
+                  loading="lazy"
+                  decoding="async"
+                  alt={`${currentYearWinners[0].person} winner ${year}`}
+                />
               ) : (
                 <span style={{fontSize:'.6rem', textAlign:'center', padding:'0 .4rem'}}>{currentYearWinners.length>0 ? 'Add winner photo' : 'No winner yet'}</span>
               )}
@@ -946,7 +1001,7 @@ function App() {
               )}
             </WinnerNames>
           </WinnerHighlight>
-          <Card /* Year Stats card in first column */ style={{/* removed height:100% (grid stretch handles) */}}>
+          <Card /* Year Stats card in first column */ style={{/* removed height:100% (grid stretch handles)*/}}>
             <CardTitle>Year Stats</CardTitle>
             {/* Year selector moved above; stats start directly */}
             <StatBoxGrid>
@@ -1022,7 +1077,7 @@ function App() {
                         return (
                         <tr key={r.person} className={isWinner ? `highlight${r.over?' over':''}` : ''}>
                           <td>{i+1}</td>
-                          <td>{r.person}{isWinner && ' 🏆'}</td>
+                          <td>{r.person}{isWinner && ' 🎯'}</td>
                           <td>{r.guess}</td>
                           <td>{r.over ? (isWinner && !anyNonOver ? `All over – over by ${r.diff}` : `Over by ${r.diff}`) : (r.diff===0 ? 'Exact!' : `Under by ${r.diff}`)}</td>
                         </tr>
@@ -1136,7 +1191,7 @@ function App() {
                     return (
                       <tr key={r.person} className={i===0 ? 'highlight' : ''}>
                         <td>{i+1}</td>
-                        <td>{r.person}{i===0 && ' 🎯'}</td>
+                        <td>{r.person}{i===0 && ' 🥇'}</td>
                         <td>{r.index.toFixed(1)}</td>
                         <td>{(Math.round(r.baseAccuracyPct*10)/10).toFixed(1)}</td>
                         <td>{Math.round(r.avgAbsError*10)/10}</td>
@@ -1167,18 +1222,41 @@ function App() {
               {carouselIndex < carouselImages.length-1 && (
                 <CarouselNavButton style={{right: '12px'}} onClick={goNext} aria-label="Next photo">›</CarouselNavButton>
               )}
-              <img src={carouselImages[carouselIndex].src} alt={`Winner ${carouselImages[carouselIndex].year}`} />
+              {carouselMainImage && (
+                <img
+                  src={carouselMainImage.src}
+                  srcSet={carouselMainImage.srcSet}
+                  sizes={carouselMainImage.sizes}
+                  alt={`Winner ${carouselImages[carouselIndex].year}`}
+                  loading="eager"
+                  decoding="async"
+                />
+              )}
               <CarouselYear style={{position:'absolute', left:16, top:14}}>{carouselImages[carouselIndex].year}</CarouselYear>
               <CarouselCloseButton onClick={closeCarousel} aria-label="Close carousel">×</CarouselCloseButton>
             </CarouselImageWrap>
             <div style={{display:'flex', gap:6, flexWrap:'wrap', justifyContent:'center', maxWidth:'100%'}}>
-              {carouselImages.map((img,i)=> (
+              {carouselImages.map((img,i)=> {
+                const thumb = {
+                  src: buildImageUrl(img.src, { w: 96, h: 96, fit: 'cover', q: 60 }),
+                  srcSet: buildSrcSet(img.src, [64,96,128], { h: 96, fit: 'cover', q: 55 }),
+                  sizes: '96px'
+                };
+                return (
                 <button key={img.year} onClick={()=> setCarouselIndex(i)} style={{
                   width:64, height:64, borderRadius:10, overflow:'hidden', border: i===carouselIndex? '2px solid #ffce3a':'1px solid rgba(255,255,255,0.25)', padding:0, cursor:'pointer', background:'#0d2d1d'
                 }} aria-label={`Jump to ${img.year}`}>
-                  <img src={img.src} alt={img.year} style={{width:'100%', height:'100%', objectFit:'cover', filter: i===carouselIndex? 'none':'brightness(.6)'}} />
+                  <img
+                    src={thumb.src}
+                    srcSet={thumb.srcSet}
+                    sizes={thumb.sizes}
+                    alt={img.year}
+                    style={{width:'100%', height:'100%', objectFit:'cover', filter: i===carouselIndex? 'none':'brightness(.6)'}}
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </button>
-              ))}
+              );})}
             </div>
             <div style={{fontSize:'.6rem', opacity:.6}}>Use arrow keys • ESC to close</div>
           </CarouselContent>

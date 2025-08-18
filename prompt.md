@@ -10,3 +10,5 @@ gifts = cards + gifts
 The site should include beautiful data visualizations and deep details about the gifts
 
 The winner is closest without going over unless everyone goes over then the closest wins. 
+
+This site will be hosted on netlify so take advantage of that if neccessary. 
