@@ -471,6 +471,7 @@ export const WinnerImage = styled.img`
   height: auto;
   object-fit: contain;
   max-width: 100%;
+  border-radius: calc(18px - 4px); /* match container radius minus padding for clean alignment */
 `;
 export const LeaderboardTableCol = styled.div`
   flex: 1 1 320px;
