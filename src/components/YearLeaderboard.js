@@ -8,10 +8,10 @@ import {
   Table,
 } from './styled';
 
-export default function YearLeaderboard({ sortedPersonYear, winnerDiff, anyNonOver }) {
+export default function YearLeaderboard({ sortedPersonYear, winnerDiff, anyNonOver, year }) {
   return (
     <Card style={{ display: 'flex', flexDirection: 'column' }}>
-      <CardTitle>Leaderboard (Closest Without Going Over)</CardTitle>
+      <CardTitle>{year} Leaderboard </CardTitle>
       <YearLeaderboardLayout>
         <LeaderboardTableCol>
           <TableScroll style={{ flex: 1, maxHeight: 'none' }}>

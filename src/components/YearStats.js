@@ -1,10 +1,17 @@
 import React from 'react';
 import { Card, CardTitle, StatBoxGrid, StatBox, StatLabel, StatValue, StatMeta } from './styled';
 
-export default function YearStats({ totalGifts, personYear, winnerDiff, anyNonOver, yearAgg }) {
+export default function YearStats({
+  totalGifts,
+  personYear,
+  winnerDiff,
+  anyNonOver,
+  yearAgg,
+  year,
+}) {
   return (
     <Card>
-      <CardTitle>Year Stats</CardTitle>
+      <CardTitle>{year} Year Stats</CardTitle>
       <StatBoxGrid>
         <StatBox>
           <StatLabel>Total Gifts</StatLabel>

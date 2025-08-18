@@ -72,12 +72,8 @@ export default function WinnerSection({
       </WinnerImageBox>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '.55rem' }}>
         <WinnerTitle>
-          🏆{' '}
-          {winners.length > 1
-            ? 'Year Winners'
-            : winners.length === 1
-              ? 'Year Winner'
-              : 'Year Winner (TBD)'}
+          🏆 {year}
+          {winners.length > 1 ? ' Winners' : winners.length === 1 ? ' Winner' : ' Winner (TBD)'}
         </WinnerTitle>
         <WinnerBadge>
           {winners.length === 0

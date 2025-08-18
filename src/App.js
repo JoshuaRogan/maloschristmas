@@ -211,11 +211,13 @@ function App() {
             winnerDiff={winnerDiff}
             anyNonOver={anyNonOver}
             yearAgg={yearAgg}
+            year={year}
           />
           <YearLeaderboard
             sortedPersonYear={sortedPersonYear}
             winnerDiff={winnerDiff}
             anyNonOver={anyNonOver}
+            year={year}
           />
           <YearBarChart
             year={year}
