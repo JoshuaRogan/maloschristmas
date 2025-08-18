@@ -26,11 +26,27 @@ export default function WinnerCarousel({ year, onClose, winnerImageMap }) {
   }, [initialIndex]);
 
   const current = images[index];
+  const [loaded, setLoaded] = useState({});
+  const markLoaded = useCallback((y) => {
+    setLoaded((l) => (l[y] ? l : { ...l, [y]: true }));
+  }, []);
+
+  // Inject spinner keyframes once
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (document.getElementById('carousel-spinner-style')) return;
+    const el = document.createElement('style');
+    el.id = 'carousel-spinner-style';
+    el.textContent = `@keyframes carouselSpin{to{transform:rotate(360deg)}}`;
+    document.head.appendChild(el);
+  }, []);
+
   const mainImage = useMemo(() => {
     if (!current) return null;
+    const base = { w: 1200, fit: 'contain', q: 75 };
     return {
-      src: buildImageUrl(current.src, { w: 1200, fit: 'contain', q: 80 }),
-      srcSet: buildSrcSet(current.src, [400, 640, 800, 1000, 1200], { fit: 'contain', q: 75 }),
+      url: buildImageUrl(current.src, base),
+      srcSet: buildSrcSet(current.src, [400, 640, 800, 1000, 1200], base),
       sizes: '(max-width: 900px) 90vw, 1100px',
     };
   }, [current]);
@@ -59,6 +75,60 @@ export default function WinnerCarousel({ year, onClose, winnerImageMap }) {
     };
   }, []);
 
+  // Preload adjacent (high priority relative to others)
+  useEffect(() => {
+    if (!images.length) return;
+    const targets = [images[index - 1], images[index + 1]].filter(Boolean);
+    targets.forEach((t) => {
+      if (loaded[t.year]) return;
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = () => markLoaded(t.year);
+      img.src = buildImageUrl(t.src, { w: 1200, fit: 'contain', q: 75 });
+      if (img.complete) markLoaded(t.year);
+    });
+  }, [index, images, loaded, markLoaded]);
+
+  // Idle queue preload of remaining images for instant later navigation
+  useEffect(() => {
+    if (!images.length) return;
+    let cancelled = false;
+    const remaining = images.map((i) => i).filter((i) => !loaded[i.year]);
+    const loadNext = () => {
+      if (cancelled) return;
+      const next = remaining.shift();
+      if (!next) return;
+      if (loaded[next.year]) {
+        loadNext();
+        return;
+      }
+      const im = new Image();
+      im.decoding = 'async';
+      im.onload = () => {
+        markLoaded(next.year);
+        // Chain the next when idle again
+        schedule();
+      };
+      im.src = buildImageUrl(next.src, { w: 1200, fit: 'contain', q: 75 });
+      if (im.complete) {
+        markLoaded(next.year);
+        schedule();
+      }
+    };
+    const schedule = () => {
+      if (cancelled) return;
+      if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+        window.requestIdleCallback(() => loadNext(), { timeout: 2000 });
+      } else {
+        setTimeout(loadNext, 200);
+      }
+    };
+    schedule();
+    return () => {
+      cancelled = true;
+    };
+  }, [images, loaded, markLoaded]);
+
   if (!images.length) return null;
 
   return (
@@ -85,14 +155,50 @@ export default function WinnerCarousel({ year, onClose, winnerImageMap }) {
             </CarouselNavButton>
           )}
           {mainImage && (
-            <img
-              src={mainImage.src}
-              srcSet={mainImage.srcSet}
-              sizes={mainImage.sizes}
-              alt={`Winner ${current.year}`}
-              loading="eager"
-              decoding="async"
-            />
+            <>
+              <img
+                src={mainImage.url}
+                srcSet={mainImage.srcSet}
+                sizes={mainImage.sizes}
+                alt={`Winner ${current.year}`}
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+                onLoad={() => markLoaded(current.year)}
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                  willChange: 'opacity',
+                  opacity: loaded[current.year] ? 1 : 0,
+                  transition: 'opacity .25s ease',
+                }}
+              />
+              {!loaded[current.year] && (
+                <div
+                  aria-hidden
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'rgba(0,0,0,0.15)',
+                    backdropFilter: 'blur(2px)',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      border: '4px solid rgba(255,255,255,0.25)',
+                      borderTop: '4px solid #ffce3a',
+                      borderRadius: '50%',
+                      animation: 'carouselSpin .8s linear infinite',
+                    }}
+                  />
+                </div>
+              )}
+            </>
           )}
           <CarouselYear style={{ position: 'absolute', left: 16, top: 14 }}>
             {current.year}
@@ -142,6 +248,7 @@ export default function WinnerCarousel({ year, onClose, winnerImageMap }) {
                     height: '100%',
                     objectFit: 'cover',
                     filter: i === index ? 'none' : 'brightness(.6)',
+                    transition: 'filter .2s',
                   }}
                   loading="lazy"
                   decoding="async"
