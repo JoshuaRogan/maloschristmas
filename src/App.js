@@ -151,6 +151,7 @@ function App() {
         year={year}
         winWidth={winWidth}
         totalGiftsSelectedYear={totalGiftsSelectedYear}
+        onSelectYear={setYear}
       />
       <GroupWrapper>
         <YearNav style={{ margin: '0.5rem 0 0.75rem' }}>

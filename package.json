@@ -24,8 +24,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "format": "prettier --cache --write .",
-    "format:check": "prettier --check ."
+    "format": "prettier --cache --write src/",
+    "format:check": "prettier --check src/"
   },
   "eslintConfig": {
     "extends": [
