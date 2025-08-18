@@ -150,7 +150,7 @@ function App() {
 
   return (
     <Wrapper>
-      <Title>Malos Family Christmas Gift & Guess Dashboard</Title>
+      <Title>Malos Family Christmas</Title>
       <AllTimeTotalBar>
         <span className="emoji" role="img" aria-label="Christmas Tree">
           🎄
