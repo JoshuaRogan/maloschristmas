@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components';
+import { Link } from 'react-router-dom';
 
 // Festive shimmer animation
 const shimmer = keyframes`
@@ -500,6 +501,42 @@ export const Table = styled.table`
   tbody tr.highlight-closer-over {
     background: linear-gradient(90deg, #b59f12, #8a7a10);
   }
+  &.profile-table {
+    th,
+    td {
+      padding: 6px 10px;
+    }
+    th.year,
+    td.year {
+      text-align: left;
+    }
+    th.result,
+    td.result {
+      text-align: left;
+    }
+    th.num,
+    td.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    th.rank,
+    td.rank {
+      text-align: center;
+    }
+    tbody td {
+      white-space: nowrap;
+    }
+    tbody td.result {
+      white-space: normal;
+    }
+    th + th,
+    td + td {
+      border-left: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    tbody td.rank {
+      font-weight: 600;
+    }
+  }
 `;
 export const TooltipBox = styled.div`
   background: #114229;
@@ -772,5 +809,84 @@ export const CarouselYear = styled.div`
     padding: 0.4rem 0.8rem 0.5rem;
     border-radius: 14px;
     letter-spacing: 1.2px;
+  }
+`;
+export const RankBadge = styled.div`
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 0.25rem 0.55rem 0.3rem;
+  border-radius: 999px;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: linear-gradient(135deg, #1d5f38, #15452a);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #f5f9f6;
+  box-shadow:
+    0 2px 6px -2px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  &.rank-1 {
+    background: linear-gradient(135deg, #ffcf4d, #ffb347);
+    color: #2b2b1a;
+  }
+  &.rank-2 {
+    background: linear-gradient(135deg, #d9dde2, #b9c1c9);
+    color: #1e262c;
+  }
+  &.rank-3 {
+    background: linear-gradient(135deg, #e1b07a, #c89256);
+    color: #2b2015;
+  }
+`;
+export const HomeLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  background: linear-gradient(135deg, #1f5f3a, #1a4d31 55%, #143a25);
+  color: #f6fbee;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 4px 10px -4px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  position: relative;
+  transition:
+    background 0.3s,
+    transform 0.18s,
+    box-shadow 0.3s;
+  overflow: hidden;
+  &:before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.18), transparent 70%);
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  &:hover {
+    background: linear-gradient(135deg, #277549, #1e5d3c 55%, #184830);
+    box-shadow:
+      0 6px 14px -6px rgba(0, 0, 0, 0.65),
+      0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+    transform: translateY(-2px);
+  }
+  &:active {
+    transform: translateY(0) scale(0.96);
+  }
+  span.emoji {
+    font-size: 1rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
   }
 `;
