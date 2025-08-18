@@ -9,6 +9,7 @@ import {
   WinnerPerson,
   WinnerGuess,
   WinnerMeta,
+  ImageLoadingIndicator,
 } from './styled';
 import { buildImageUrl, buildSrcSet } from '../utils/images';
 
@@ -21,7 +22,14 @@ export default function WinnerSection({
   onOpenCarousel,
 }) {
   const [orientation, setOrientation] = useState('landscape');
+  const [imgLoading, setImgLoading] = useState(true);
   const imgSrc = winnerImageMap[year];
+  // reset loading when image source changes
+  React.useEffect(() => {
+    if (imgSrc) {
+      setImgLoading(true);
+    }
+  }, [imgSrc]);
   const optimized = useMemo(() => {
     if (!imgSrc || !winners.length) return null;
     return {
@@ -33,6 +41,7 @@ export default function WinnerSection({
   const onLoad = (e) => {
     const { naturalWidth: w, naturalHeight: h } = e.target;
     if (w && h) setOrientation(h > w * 1.15 ? 'portrait' : 'landscape');
+    setImgLoading(false);
   };
   return (
     <WinnerHighlight>
@@ -43,13 +52,18 @@ export default function WinnerSection({
         aria-label="Winner photo (open carousel)"
       >
         {winners.length > 0 && imgSrc ? (
-          <WinnerImage
-            {...optimized}
-            onLoad={onLoad}
-            loading="lazy"
-            decoding="async"
-            alt={`${winners[0].person} winner ${year}`}
-          />
+          <>
+            {imgLoading && <ImageLoadingIndicator aria-label="Loading winner image" />}
+            <WinnerImage
+              {...optimized}
+              onLoad={onLoad}
+              onError={() => setImgLoading(false)}
+              loading="lazy"
+              decoding="async"
+              alt={`${winners[0].person} winner ${year}`}
+              style={imgLoading ? { visibility: 'hidden' } : undefined}
+            />
+          </>
         ) : (
           <span style={{ fontSize: '.6rem', textAlign: 'center', padding: '0 .4rem' }}>
             {winners.length > 0 ? 'Add winner photo' : 'No winner yet'}

@@ -587,6 +587,31 @@ export const WinnerImage = styled.img`
   max-width: 100%;
   border-radius: calc(18px - 4px); /* match container radius minus padding for clean alignment */
 `;
+// New loading indicator for winner image (non-carousel)
+const winnerImgSpin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+export const ImageLoadingIndicator = styled.div`
+  position: absolute;
+  inset: 4px; /* align with padding of box */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.05));
+  border-radius: 14px;
+  &:before {
+    content: '';
+    width: 34px;
+    height: 34px;
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-top-color: #ffe8a3;
+    border-radius: 50%;
+    animation: ${winnerImgSpin} 0.85s linear infinite;
+    box-shadow: 0 0 8px -2px rgba(0, 0, 0, 0.6);
+  }
+`;
 export const LeaderboardTableCol = styled.div`
   flex: 1 1 320px;
   min-width: 0;
