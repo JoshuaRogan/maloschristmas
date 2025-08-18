@@ -7,6 +7,7 @@ import {
   TableScroll,
   Table,
 } from './styled';
+import { Link } from 'react-router-dom';
 
 export default function YearLeaderboard({ sortedPersonYear, winnerDiff, anyNonOver, year }) {
   return (
@@ -44,7 +45,13 @@ export default function YearLeaderboard({ sortedPersonYear, winnerDiff, anyNonOv
                     >
                       <td>{i + 1}</td>
                       <td>
-                        {r.person}
+                        <Link
+                          to={`/profile/${encodeURIComponent(r.person)}`}
+                          style={{ color: 'inherit', textDecoration: 'none' }}
+                          title={`View ${r.person} profile`}
+                        >
+                          {r.person}
+                        </Link>
                         {isWinner && ' 🎯'}
                         {isCloserOver && ' ⚠️'}
                       </td>

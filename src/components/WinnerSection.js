@@ -12,6 +12,7 @@ import {
   ImageLoadingIndicator,
 } from './styled';
 import { buildImageUrl, buildSrcSet } from '../utils/images';
+import { Link } from 'react-router-dom';
 
 export default function WinnerSection({
   year,
@@ -89,7 +90,14 @@ export default function WinnerSection({
         {winners.length > 0 ? (
           winners.map((w) => (
             <WinnerPerson key={w.person}>
-              <div style={{ fontWeight: 700, letterSpacing: '.5px' }}>{w.person}</div>
+              <div style={{ fontWeight: 700, letterSpacing: '.5px' }}>
+                <Link
+                  to={`/profile/${encodeURIComponent(w.person)}`}
+                  style={{ color: 'inherit', textDecoration: 'none' }}
+                >
+                  {w.person}
+                </Link>
+              </div>
               <WinnerGuess>
                 <span style={{ fontSize: '.65rem', opacity: 0.65 }}>Guess</span>
                 <span>{w.guess}</span>

@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Card, CardTitle, TableScroll, Table, Stat } from './styled';
+import { Link } from 'react-router-dom';
 
 export default function BestGuessers({ bestGuessers }) {
   const [sort, setSort] = useState({ key: 'index', dir: 'desc' });
@@ -112,7 +113,12 @@ export default function BestGuessers({ bestGuessers }) {
               <tr key={r.person} className={rankMap[r.person] === 1 ? 'highlight' : ''}>
                 <td>{rankMap[r.person]}</td>
                 <td>
-                  {r.person}
+                  <Link
+                    to={`/profile/${encodeURIComponent(r.person)}`}
+                    style={{ color: 'inherit', textDecoration: 'none' }}
+                  >
+                    {r.person}
+                  </Link>
                   {rankMap[r.person] === 1 && ' 🥇'}
                 </td>
                 <td>{r.index.toFixed(1)}</td>

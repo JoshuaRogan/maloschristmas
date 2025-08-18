@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardTitle, WinnersGrid, TableScroll, Table, Stat } from './styled';
 
 export default function OverallWinners({ winnersByYear, overallWinCounts }) {
@@ -27,7 +28,12 @@ export default function OverallWinners({ winnersByYear, overallWinCounts }) {
                 <tr key={r.person} className={i === 0 ? 'highlight' : ''}>
                   <td>{i + 1}</td>
                   <td>
-                    {r.person}
+                    <Link
+                      to={`/profile/${encodeURIComponent(r.person)}`}
+                      style={{ color: 'inherit', textDecoration: 'none' }}
+                    >
+                      {r.person}
+                    </Link>
                     {i === 0 && ' 🏆'}
                   </td>
                   <td>{r.wins}</td>

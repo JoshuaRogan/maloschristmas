@@ -13,7 +13,13 @@ export function parseCsv(url) {
 }
 
 export function sanitizeRow(row) {
-  const clean = { Person: (row.Person || row['Person '] || '').trim() };
+  const rawName = row.Person || row['Person '] || '';
+  const normalizedName = rawName
+    ? rawName
+        .replace(/\s+/g, ' ') // collapse all whitespace (handles non-breaking space too)
+        .trim()
+    : '';
+  const clean = { Person: normalizedName };
   Object.keys(row).forEach((k) => {
     if (k === 'Person' || k === 'Person ') return;
     const v = row[k];

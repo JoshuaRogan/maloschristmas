@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Card,
   CardTitle,
@@ -37,10 +38,20 @@ export default function AllTimeMeta({ meta }) {
   const longestStreaks = backToBackSequences.filter((s) => s.length === longestStreak);
   const worstDiff = worstGuesses.length ? worstGuesses[0].diff : 0;
   const formatPeopleYears = (arr) =>
-    arr
-      .map((g) => `${g.person}${g.year ? ' ' + g.year : ''}`)
-      .slice(0, 3)
-      .join(', ') + (arr.length > 3 ? '…' : '') || '—';
+    arr.length
+      ? arr.slice(0, 3).map((g, idx) => (
+          <span key={`${g.person}-${g.year || idx}`}>
+            <Link
+              to={`/profile/${encodeURIComponent(g.person)}`}
+              style={{ color: 'inherit', textDecoration: 'none' }}
+            >
+              {g.person}
+            </Link>
+            {g.year ? ' ' + g.year : ''}
+            {idx < Math.min(arr.length, 3) - 1 ? ', ' : ''}
+          </span>
+        ))
+      : '—';
   return (
     <Card>
       <CardTitle>All-Time Extra Stats ✨</CardTitle>
@@ -87,17 +98,39 @@ export default function AllTimeMeta({ meta }) {
         <StatBox>
           <StatLabel>Top Gifter Total</StatLabel>
           <StatValue>{topGifterTotal || '—'}</StatValue>
-          <StatMeta>{topGifters.length ? topGifters.join(', ') : '—'}</StatMeta>
+          <StatMeta>
+            {topGifters.length
+              ? topGifters.slice(0, 3).map((p, idx) => (
+                  <span key={p}>
+                    <Link
+                      to={`/profile/${encodeURIComponent(p)}`}
+                      style={{ color: 'inherit', textDecoration: 'none' }}
+                    >
+                      {p}
+                    </Link>
+                    {idx < Math.min(topGifters.length, 3) - 1 ? ', ' : ''}
+                  </span>
+                ))
+              : '—'}
+          </StatMeta>
         </StatBox>
         <StatBox>
           <StatLabel>Max Single-Year Gifts</StatLabel>
           <StatValue>{maxSingleYearContribution || '—'}</StatValue>
           <StatMeta>
             {maxSingleYearContributors.length
-              ? maxSingleYearContributors
-                  .map((c) => `${c.person} ${c.year}`)
-                  .slice(0, 3)
-                  .join(', ') + (maxSingleYearContributors.length > 3 ? '…' : '')
+              ? maxSingleYearContributors.slice(0, 3).map((c, idx) => (
+                  <span key={c.person + '-' + c.year}>
+                    <Link
+                      to={`/profile/${encodeURIComponent(c.person)}`}
+                      style={{ color: 'inherit', textDecoration: 'none' }}
+                    >
+                      {c.person}
+                    </Link>{' '}
+                    {c.year}
+                    {idx < Math.min(maxSingleYearContributors.length, 3) - 1 ? ', ' : ''}
+                  </span>
+                ))
               : '—'}
           </StatMeta>
         </StatBox>
@@ -106,10 +139,18 @@ export default function AllTimeMeta({ meta }) {
           <StatValue>{biggestGuessValue || '—'}</StatValue>
           <StatMeta>
             {biggestGuesses.length
-              ? biggestGuesses
-                  .map((g) => `${g.person} ${g.year}`)
-                  .slice(0, 3)
-                  .join(', ') + (biggestGuesses.length > 3 ? '…' : '')
+              ? biggestGuesses.slice(0, 3).map((g, idx) => (
+                  <span key={g.person + g.year}>
+                    <Link
+                      to={`/profile/${encodeURIComponent(g.person)}`}
+                      style={{ color: 'inherit', textDecoration: 'none' }}
+                    >
+                      {g.person}
+                    </Link>{' '}
+                    {g.year}
+                    {idx < Math.min(biggestGuesses.length, 3) - 1 ? ', ' : ''}
+                  </span>
+                ))
               : '—'}
           </StatMeta>
         </StatBox>
@@ -118,10 +159,18 @@ export default function AllTimeMeta({ meta }) {
           <StatValue>{smallestGuessValue || '—'}</StatValue>
           <StatMeta>
             {smallestGuesses.length
-              ? smallestGuesses
-                  .map((g) => `${g.person} ${g.year}`)
-                  .slice(0, 3)
-                  .join(', ') + (smallestGuesses.length > 3 ? '…' : '')
+              ? smallestGuesses.slice(0, 3).map((g, idx) => (
+                  <span key={g.person + g.year}>
+                    <Link
+                      to={`/profile/${encodeURIComponent(g.person)}`}
+                      style={{ color: 'inherit', textDecoration: 'none' }}
+                    >
+                      {g.person}
+                    </Link>{' '}
+                    {g.year}
+                    {idx < Math.min(smallestGuesses.length, 3) - 1 ? ', ' : ''}
+                  </span>
+                ))
               : '—'}
           </StatMeta>
         </StatBox>
@@ -154,7 +203,14 @@ export default function AllTimeMeta({ meta }) {
               {spotOnDetails.map((r, i) => (
                 <tr key={r.person} className={i === 0 ? 'highlight' : ''}>
                   <td>{i + 1}</td>
-                  <td>{r.person}</td>
+                  <td>
+                    <Link
+                      to={`/profile/${encodeURIComponent(r.person)}`}
+                      style={{ color: 'inherit', textDecoration: 'none' }}
+                    >
+                      {r.person}
+                    </Link>
+                  </td>
                   <td style={{ fontWeight: 600 }}>{r.count}</td>
                   <td style={{ whiteSpace: 'nowrap' }}>
                     {r.years.map((y, idx) => (
@@ -213,11 +269,30 @@ export default function AllTimeMeta({ meta }) {
                   .map((r) => (
                     <tr key={`${r.year}-${r.person}`}>
                       <td>{r.year}</td>
-                      <td>{r.person}</td>
+                      <td>
+                        <Link
+                          to={`/profile/${encodeURIComponent(r.person)}`}
+                          style={{ color: 'inherit', textDecoration: 'none' }}
+                        >
+                          {r.person}
+                        </Link>
+                      </td>
                       <td>{r.guess}</td>
                       <td style={{ whiteSpace: 'nowrap' }}>over by {r.overDiff}</td>
                       <td style={{ whiteSpace: 'nowrap' }}>{r.winnerDiff}</td>
-                      <td style={{ whiteSpace: 'nowrap' }}>{r.winners.join(', ')}</td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
+                        {r.winners.map((w, idx) => (
+                          <span key={w + idx}>
+                            <Link
+                              to={`/profile/${encodeURIComponent(w)}`}
+                              style={{ color: 'inherit', textDecoration: 'none' }}
+                            >
+                              {w}
+                            </Link>
+                            {idx < r.winners.length - 1 ? ', ' : ''}
+                          </span>
+                        ))}
+                      </td>
                       <td>{r.total}</td>
                     </tr>
                   ))}

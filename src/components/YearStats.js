@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardTitle, StatBoxGrid, StatBox, StatLabel, StatValue, StatMeta } from './styled';
+import { Link } from 'react-router-dom';
 
 export default function YearStats({
   totalGifts,
@@ -87,7 +88,18 @@ export default function YearStats({
               <StatLabel>Worst Offset</StatLabel>
               <StatValue>{yearAgg.worstDiff}</StatValue>
               <StatMeta style={{ whiteSpace: 'normal' }}>
-                Furthest: {yearAgg.worstPeople.slice(0, 3).join(', ')}
+                Furthest:{' '}
+                {yearAgg.worstPeople.slice(0, 3).map((p, idx) => (
+                  <span key={p}>
+                    <Link
+                      to={`/profile/${encodeURIComponent(p)}`}
+                      style={{ color: 'inherit', textDecoration: 'none' }}
+                    >
+                      {p}
+                    </Link>
+                    {idx < Math.min(3, yearAgg.worstPeople.length) - 1 ? ', ' : ''}
+                  </span>
+                ))}
                 {yearAgg.worstPeople.length > 3 ? '...' : ''}
               </StatMeta>
             </StatBox>
