@@ -23,6 +23,7 @@ import {
   deriveWinnersByYear,
   deriveOverallWinCounts,
   deriveBestGuessers,
+  deriveAllTimeMeta,
 } from './utils/data';
 import useWindowWidth from './hooks/useWindowWidth';
 // Components
@@ -35,6 +36,7 @@ import OverallWinners from './components/OverallWinners';
 import BestGuessers from './components/BestGuessers';
 import WinnerCarousel from './components/WinnerCarousel';
 import { winnerImageMap } from './utils/images';
+import AllTimeMeta from './components/AllTimeMeta';
 
 function App() {
   const [gifts, setGifts] = useState(null);
@@ -132,6 +134,10 @@ function App() {
         .map((y) => y.year),
     );
   }, [winnersByYear]);
+  const allTimeMeta = useMemo(
+    () => deriveAllTimeMeta(winnersByYear, gifts, guesses, giftsYearTotals),
+    [winnersByYear, gifts, guesses, giftsYearTotals],
+  );
 
   const yearIndex = allYears.indexOf(year);
   const prevYear = yearIndex > 0 ? allYears[yearIndex - 1] : null;
@@ -232,6 +238,7 @@ function App() {
       <GroupWrapper>
         <OverallWinners winnersByYear={winnersByYear} overallWinCounts={overallWinCounts} />
         <BestGuessers bestGuessers={bestGuessers} />
+        <AllTimeMeta meta={allTimeMeta} />
       </GroupWrapper>
       <Footer>
         Data visualizations generated with Recharts. CSV parsed client-side. &copy;{' '}
