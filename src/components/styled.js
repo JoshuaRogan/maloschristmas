@@ -64,6 +64,9 @@ export const CardTitle = styled.h2`
 `;
 export const Select = styled.select`
   background: linear-gradient(140deg, #185c38, #134d30);
+  /* Windows (some Edge/Chrome builds) were dropping gradient & keeping light system bg, causing white-on-white.
+     Provide solid fallback + option styling to ensure contrast. */
+  background-color: #185c38; /* fallback solid color */
   color: #f7fff9;
   border: 1px solid #2a7a4d;
   padding: 0.75rem 2.75rem 0.75rem 1rem;
@@ -79,10 +82,20 @@ export const Select = styled.select`
   line-height: 1.1;
   appearance: none;
   -webkit-appearance: none;
+  -moz-appearance: none;
+  color-scheme: dark; /* hint for Windows */
   transition:
     background 0.3s,
     box-shadow 0.3s,
     border-color 0.3s;
+  &::-ms-expand {
+    /* hide old IE/Edge arrow */
+    display: none;
+  }
+  option {
+    background: #134d30; /* ensure dark menu */
+    color: #f7fff9;
+  }
   &:hover {
     background: linear-gradient(140deg, #1d7146, #155836);
   }
@@ -90,6 +103,16 @@ export const Select = styled.select`
     box-shadow:
       0 0 0 2px #2fa567,
       0 2px 8px -2px rgba(0, 0, 0, 0.55);
+  }
+  @media (forced-colors: active) {
+    /* High contrast mode (Windows) */
+    background: Canvas;
+    color: CanvasText;
+    border-color: ButtonBorder;
+    option {
+      background: Canvas;
+      color: CanvasText;
+    }
   }
 `;
 export const YearSelectWrap = styled.div`
