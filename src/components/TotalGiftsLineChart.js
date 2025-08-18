@@ -18,6 +18,7 @@ export default function TotalGiftsLineChart({
   winWidth,
   totalGiftsSelectedYear,
   onSelectYear,
+  exactYearSet = new Set(),
 }) {
   const lineChartHeight = winWidth < 600 ? 230 : 300;
   const handleClick = (d) => {
@@ -27,6 +28,60 @@ export default function TotalGiftsLineChart({
   const renderDot = (props) => {
     const { cx, cy, payload } = props;
     const isActive = String(payload.year) === String(year);
+    const isExact = exactYearSet.has(String(payload.year));
+    const baseR = isActive ? (winWidth < 500 ? 6 : 7) : winWidth < 500 ? 4 : 5;
+    if (isExact) {
+      const outerR = baseR + (winWidth < 500 ? 3 : 4);
+      const midR = outerR * 0.62;
+      const innerR = outerR * 0.32;
+      const strokeMain = isActive ? '#ff6b6b' : '#ffbb33';
+      return (
+        <g style={{ cursor: 'pointer' }} onClick={() => handleClick(payload)}>
+          {/* outer halo */}
+          <circle cx={cx} cy={cy} r={outerR + 2} fill="rgba(255,255,255,0.15)" />
+          {/* outer ring */}
+          <circle
+            cx={cx}
+            cy={cy}
+            r={outerR}
+            fill="#102c3a"
+            stroke={strokeMain}
+            strokeWidth={isActive ? 3 : 2}
+          />
+          {/* mid ring */}
+          <circle
+            cx={cx}
+            cy={cy}
+            r={midR}
+            fill={isActive ? '#ffbb33' : '#102c3a'}
+            stroke={strokeMain}
+            strokeWidth={isActive ? 2 : 1.5}
+          />
+          {/* inner dot */}
+          <circle cx={cx} cy={cy} r={innerR} fill={isActive ? '#ff6b6b' : '#ffbb33'} />
+          {/* subtle crosshair to emphasize */}
+          <line
+            x1={cx - outerR}
+            x2={cx + outerR}
+            y1={cy}
+            y2={cy}
+            stroke={strokeMain}
+            strokeWidth={1}
+            opacity={0.55}
+          />
+          <line
+            x1={cx}
+            x2={cx}
+            y1={cy - outerR}
+            y2={cy + outerR}
+            stroke={strokeMain}
+            strokeWidth={1}
+            opacity={0.55}
+          />
+          <title>Exact guess year</title>
+        </g>
+      );
+    }
     return (
       <circle
         cx={cx}

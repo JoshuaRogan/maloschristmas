@@ -123,6 +123,15 @@ function App() {
     () => deriveBestGuessers(guesses, giftsYearTotals),
     [guesses, giftsYearTotals],
   );
+  // derive years that had at least one exact (non-over) guess
+  const exactYearSet = useMemo(() => {
+    if (!winnersByYear.length) return new Set();
+    return new Set(
+      winnersByYear
+        .filter((y) => y.winners.some((w) => w.diff === 0 && w.over === false))
+        .map((y) => y.year),
+    );
+  }, [winnersByYear]);
 
   const yearIndex = allYears.indexOf(year);
   const prevYear = yearIndex > 0 ? allYears[yearIndex - 1] : null;
@@ -167,6 +176,7 @@ function App() {
         winWidth={winWidth}
         totalGiftsSelectedYear={totalGiftsSelectedYear}
         onSelectYear={setYear}
+        exactYearSet={exactYearSet}
       />
       <GroupWrapper>
         <YearNav style={{ margin: '0.5rem 0 0.75rem' }}>
