@@ -1,4 +1,4 @@
-http://maloschristmas.com/ 
+http://maloschristmas.com/
 
 ## Available Scripts
 
