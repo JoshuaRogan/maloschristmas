@@ -14,10 +14,10 @@ import {
 export default function AllTimeMeta({ meta }) {
   if (!meta) return null;
   const {
-    spotOnDetails = [], // detailed list with years
+    spotOnDetails = [],
     totalSpotOn = 0,
     backToBackSequences = [],
-    worstGuesses = [], // still used for stat box summary
+    worstGuesses = [],
     maxYearGiftTotal = 0,
     maxYearGiftYears = [],
     topGifterTotal = 0,
@@ -28,6 +28,8 @@ export default function AllTimeMeta({ meta }) {
     smallestGuesses = [],
     maxSingleYearContribution = 0,
     maxSingleYearContributors = [],
+    closerOverBeatsCount = 0,
+    closerOverBeats = [],
   } = meta;
   const longestStreak = backToBackSequences.length
     ? Math.max(...backToBackSequences.map((s) => s.length))
@@ -47,6 +49,11 @@ export default function AllTimeMeta({ meta }) {
           <StatLabel>Spot-On Wins</StatLabel>
           <StatValue>{totalSpotOn}</StatValue>
           <StatMeta>Exact (non-over) winning guesses</StatMeta>
+        </StatBox>
+        <StatBox>
+          <StatLabel>Over Closer Misses</StatLabel>
+          <StatValue>{closerOverBeatsCount}</StatValue>
+          <StatMeta>Over guesses closer than winner</StatMeta>
         </StatBox>
         <StatBox>
           <StatLabel>Longest Streak</StatLabel>
@@ -120,6 +127,7 @@ export default function AllTimeMeta({ meta }) {
         </StatBox>
       </StatBoxGrid>
       <div style={{ marginTop: '0.9rem' }}>
+        {/* Spot-On Winners */}
         <div
           style={{
             fontSize: '.7rem',
@@ -169,6 +177,55 @@ export default function AllTimeMeta({ meta }) {
           </Table>
         </TableScroll>
       </div>
+      {closerOverBeatsCount > 0 && (
+        <div style={{ marginTop: '1.2rem' }}>
+          <div
+            style={{
+              fontSize: '.7rem',
+              letterSpacing: '.8px',
+              fontWeight: 600,
+              opacity: 0.75,
+              textTransform: 'uppercase',
+              margin: '0 0 4px',
+            }}
+          >
+            Over Closer Misses
+          </div>
+          <TableScroll $maxHeight={260}>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Year</th>
+                  <th>Over Guesser</th>
+                  <th>Guess</th>
+                  <th>Over Diff</th>
+                  <th>Winner Diff</th>
+                  <th>Winners</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {closerOverBeats
+                  .slice()
+                  .sort(
+                    (a, b) => Number(b.year) - Number(a.year) || a.person.localeCompare(b.person),
+                  )
+                  .map((r) => (
+                    <tr key={`${r.year}-${r.person}`}>
+                      <td>{r.year}</td>
+                      <td>{r.person}</td>
+                      <td>{r.guess}</td>
+                      <td style={{ whiteSpace: 'nowrap' }}>over by {r.overDiff}</td>
+                      <td style={{ whiteSpace: 'nowrap' }}>{r.winnerDiff}</td>
+                      <td style={{ whiteSpace: 'nowrap' }}>{r.winners.join(', ')}</td>
+                      <td>{r.total}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          </TableScroll>
+        </div>
+      )}
     </Card>
   );
 }

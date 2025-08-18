@@ -497,6 +497,9 @@ export const Table = styled.table`
   tbody tr.highlight.over {
     background: linear-gradient(90deg, #b3541e, #8a3f15);
   }
+  tbody tr.highlight-closer-over {
+    background: linear-gradient(90deg, #b59f12, #8a7a10);
+  }
 `;
 export const TooltipBox = styled.div`
   background: #114229;

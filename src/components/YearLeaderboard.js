@@ -29,15 +29,24 @@ export default function YearLeaderboard({ sortedPersonYear, winnerDiff, anyNonOv
                   const isWinner =
                     (anyNonOver && !r.over && r.diff === winnerDiff) ||
                     (!anyNonOver && r.over && r.diff === winnerDiff);
+                  // Highlight any over guess that was actually closer than the winning non-over guess
+                  const isCloserOver = anyNonOver && r.over && r.diff < winnerDiff;
+                  const rowClass = isWinner
+                    ? `highlight${r.over ? ' over' : ''}`
+                    : isCloserOver
+                      ? 'highlight-closer-over'
+                      : '';
                   return (
                     <tr
                       key={r.person}
-                      className={isWinner ? `highlight${r.over ? ' over' : ''}` : ''}
+                      className={rowClass}
+                      title={isCloserOver ? 'Closer than winner but went over' : undefined}
                     >
                       <td>{i + 1}</td>
                       <td>
                         {r.person}
                         {isWinner && ' 🎯'}
+                        {isCloserOver && ' ⚠️'}
                       </td>
                       <td>{r.guess}</td>
                       <td>

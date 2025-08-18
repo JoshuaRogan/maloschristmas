@@ -208,6 +208,8 @@ export function deriveAllTimeMeta(winnersByYear, gifts, guesses, giftsYearTotals
       smallestGuesses: [],
       maxSingleYearContribution: 0,
       maxSingleYearContributors: [],
+      closerOverBeatsCount: 0,
+      closerOverBeats: [],
     };
   // Spot-on wins
   const spotOnMap = {};
@@ -370,6 +372,39 @@ export function deriveAllTimeMeta(winnersByYear, gifts, guesses, giftsYearTotals
   maxSingleYearContributors.sort(
     (a, b) => a.person.localeCompare(b.person) || a.year.localeCompare(b.year),
   );
+  // Compute over guesses that were closer than the winning non-over guess
+  let closerOverBeatsCount = 0;
+  const closerOverBeats = [];
+  const winnersYearMap = Object.fromEntries(
+    winnersByYear.map((y) => [y.year, y.winners.map((w) => w.person)]),
+  );
+  giftsYearTotals.forEach(({ year, total }) => {
+    const rows = combinePersonYear(gifts, guesses, year, total);
+    const withGuesses = rows.filter((r) => r.guess != null);
+    if (!withGuesses.length) return;
+    const nonOver = withGuesses.filter((r) => r.over === false);
+    if (!nonOver.length) return; // all-over year skipped (no non-over winner baseline)
+    const winnerDiff = Math.min(...nonOver.map((r) => r.diff));
+    // Find over guesses that beat winner diff
+    const beatingOvers = withGuesses.filter((r) => r.over === true && r.diff < winnerDiff);
+    if (!beatingOvers.length) return;
+    // Choose closest (smallest diff). If tie, pick alphabetical person.
+    const bestOverDiff = Math.min(...beatingOvers.map((r) => r.diff));
+    const bestOvers = beatingOvers.filter((r) => r.diff === bestOverDiff);
+    bestOvers.sort((a, b) => a.person.localeCompare(b.person));
+    const chosen = bestOvers[0];
+    closerOverBeats.push({
+      year,
+      person: chosen.person,
+      guess: chosen.guess,
+      overDiff: chosen.diff,
+      winnerDiff,
+      winners: winnersYearMap[year] || [],
+      total,
+    });
+  });
+  closerOverBeats.sort((a, b) => Number(a.year) - Number(b.year));
+  closerOverBeatsCount = closerOverBeats.length;
   return {
     spotOnCounts,
     spotOnDetails,
@@ -386,5 +421,7 @@ export function deriveAllTimeMeta(winnersByYear, gifts, guesses, giftsYearTotals
     smallestGuesses,
     maxSingleYearContribution,
     maxSingleYearContributors,
+    closerOverBeatsCount,
+    closerOverBeats,
   };
 }
