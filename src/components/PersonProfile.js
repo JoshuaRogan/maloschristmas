@@ -543,6 +543,21 @@ export default function PersonProfile() {
         <Card>
           <CardTitle>Summary Stats</CardTitle>
           <StatBoxGrid>
+            {/* Wins moved to first position */}
+            <StatBox>
+              {personWinRank && (
+                <RankBadge
+                  className={personWinRank <= 3 ? `rank-${personWinRank}` : ''}
+                  aria-label={`Wins rank #${personWinRank} of ${totalWinPlayers}`}
+                  title={`Wins rank #${personWinRank} of ${totalWinPlayers}`}
+                >
+                  #{personWinRank}
+                </RankBadge>
+              )}
+              <StatLabel>Wins</StatLabel>
+              <StatValue>{stats.wins}</StatValue>
+              <StatMeta>{winsYears.join(', ') || '—'}</StatMeta>
+            </StatBox>
             <StatBox>
               {personYearsPlayedRank && (
                 <RankBadge
@@ -595,20 +610,6 @@ export default function PersonProfile() {
               <StatMeta>+ over / - under</StatMeta>
             </StatBox>
             <StatBox>
-              {personWinRank && (
-                <RankBadge
-                  className={personWinRank <= 3 ? `rank-${personWinRank}` : ''}
-                  aria-label={`Wins rank #${personWinRank} of ${totalWinPlayers}`}
-                  title={`Wins rank #${personWinRank} of ${totalWinPlayers}`}
-                >
-                  #{personWinRank}
-                </RankBadge>
-              )}
-              <StatLabel>Wins</StatLabel>
-              <StatValue>{stats.wins}</StatValue>
-              <StatMeta>{winsYears.join(', ') || '—'}</StatMeta>
-            </StatBox>
-            <StatBox>
               {personSpotOnRank && (
                 <RankBadge
                   className={personSpotOnRank <= 3 ? `rank-${personSpotOnRank}` : ''}
@@ -648,28 +649,6 @@ export default function PersonProfile() {
               <StatLabel>Worst Diff</StatLabel>
               <StatValue>{stats.worstDiff == null ? '—' : stats.worstDiff}</StatValue>
             </StatBox>
-            {/*
-            <StatBox>
-              {personBestIndexRank && (
-                <RankBadge
-                  className={personBestIndexRank <= 3 ? `rank-${personBestIndexRank}` : ''}
-                  aria-label={`Best Guesser Index rank #${personBestIndexRank} of ${totalBestEligible}`}
-                  title={`Best Guesser Index rank #${personBestIndexRank} of ${totalBestEligible}`}
-                >
-                  #{personBestIndexRank}
-                </RankBadge>
-              )}
-              <StatLabel>Best Guesser Index</StatLabel>
-              <StatValue>
-                {personBestIndex ? personBestIndex.index.toFixed(1) : '—'}
-              </StatValue>
-              <StatMeta>
-                {personBestIndex
-                  ? `${(Math.round(personBestIndex.baseAccuracyPct * 10) / 10).toFixed(1)}% × ${personBestIndex.yearsParticipated}`
-                  : 'Needs 6+ yrs'}
-              </StatMeta>
-            </StatBox>
-            */}
             <StatBox>
               {personBiggestContributionRank && (
                 <RankBadge
