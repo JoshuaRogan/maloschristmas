@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components';
 import { winnerImageMap, buildImageUrl } from '../utils/images';
 import { parseCsv } from '../utils/csv';
+import usePageTitle from '../hooks/usePageTitle';
 
 const PageWrap = styled.div`
   min-height: 100vh;
@@ -110,6 +111,8 @@ export default function WinnerImagesGallery() {
   const [years, setYears] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  usePageTitle('Winner Images');
 
   useEffect(() => {
     let cancelled = false;

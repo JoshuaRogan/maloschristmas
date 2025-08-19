@@ -12,6 +12,7 @@ import {
   Footer,
   Loading,
   AllTimeTotalBar,
+  HomeLink,
 } from './components/styled';
 // Data / hooks
 import { parseCsv, sanitizeRow } from './utils/csv';
@@ -27,6 +28,7 @@ import {
   deriveAverageRanks,
 } from './utils/data';
 import useWindowWidth from './hooks/useWindowWidth';
+import usePageTitle from './hooks/usePageTitle';
 // Components
 import TotalGiftsLineChart from './components/TotalGiftsLineChart';
 import WinnerSection from './components/WinnerSection';
@@ -48,6 +50,8 @@ function App() {
   const [showCarousel, setShowCarousel] = useState(false);
   const [carouselYear, setCarouselYear] = useState(null);
   const winWidth = useWindowWidth();
+
+  usePageTitle('Home');
 
   useEffect(() => {
     let cancelled = false;
@@ -248,6 +252,11 @@ function App() {
         <AllTimeMeta meta={allTimeMeta} />
       </GroupWrapper>
       <Footer>
+        <div style={{ margin: '0 0 0.75rem', display: 'flex', justifyContent: 'center' }}>
+          <HomeLink to="/winner-images" aria-label="View Winner Images Gallery">
+            <span className="emoji">🖼️</span> Winner Images
+          </HomeLink>
+        </div>
         Data visualizations generated with Recharts. CSV parsed client-side. &copy;{' '}
         {new Date().getFullYear()} Malos Family.
       </Footer>

@@ -35,6 +35,7 @@ import { matchPersonByParam } from '../utils/people';
 import { deriveWinnersByYear, deriveOverallWinCounts, deriveAllTimeMeta } from '../utils/data';
 import { winnerImageMap, buildImageUrl } from '../utils/images';
 import WinnerCarousel from './WinnerCarousel';
+import usePageTitle from '../hooks/usePageTitle';
 
 export default function PersonProfile() {
   const { person: personParam } = useParams();
@@ -387,6 +388,8 @@ export default function PersonProfile() {
       })),
     [timelineWithRanks],
   );
+
+  usePageTitle(person ? `${person} Profile` : 'Profile');
 
   if (error)
     return (
