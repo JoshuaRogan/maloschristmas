@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import {
   CarouselOverlay,
   CarouselContent,
@@ -55,6 +55,79 @@ export default function WinnerCarousel({ year, onClose, winnerImageMap }) {
   const goNext = useCallback(
     () => setIndex((i) => (i < images.length - 1 ? i + 1 : i)),
     [images.length],
+  );
+
+  // Swipe / drag support
+  const gestureRef = useRef(null);
+  const startGesture = useCallback((clientX, clientY) => {
+    gestureRef.current = {
+      startX: clientX,
+      startY: clientY,
+      used: false,
+    };
+  }, []);
+  const moveGesture = useCallback(
+    (clientX, clientY) => {
+      const g = gestureRef.current;
+      if (!g || g.used) return;
+      const dx = clientX - g.startX;
+      const dy = clientY - g.startY;
+      if (Math.abs(dx) < 40) return; // threshold
+      if (Math.abs(dy) > Math.abs(dx) * 0.65) return; // mostly horizontal
+      if (dx > 0) {
+        goPrev();
+      } else {
+        goNext();
+      }
+      g.used = true; // prevent multiple navigations per gesture
+    },
+    [goPrev, goNext],
+  );
+  const endGesture = useCallback(() => {
+    gestureRef.current = null;
+  }, []);
+
+  const onTouchStart = useCallback(
+    (e) => {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      startGesture(t.clientX, t.clientY);
+    },
+    [startGesture],
+  );
+  const onTouchMove = useCallback(
+    (e) => {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      moveGesture(t.clientX, t.clientY);
+    },
+    [moveGesture],
+  );
+  const onTouchEnd = useCallback(() => endGesture(), [endGesture]);
+
+  const pointerIdRef = useRef(null);
+  const onPointerDown = useCallback(
+    (e) => {
+      if (e.pointerType === 'mouse' && e.buttons !== 1) return;
+      pointerIdRef.current = e.pointerId;
+      startGesture(e.clientX, e.clientY);
+    },
+    [startGesture],
+  );
+  const onPointerMove = useCallback(
+    (e) => {
+      if (pointerIdRef.current !== e.pointerId) return;
+      moveGesture(e.clientX, e.clientY);
+    },
+    [moveGesture],
+  );
+  const onPointerUp = useCallback(
+    (e) => {
+      if (pointerIdRef.current !== e.pointerId) return;
+      endGesture();
+      pointerIdRef.current = null;
+    },
+    [endGesture],
   );
 
   useEffect(() => {
@@ -139,7 +212,15 @@ export default function WinnerCarousel({ year, onClose, winnerImageMap }) {
       aria-label="Winner photos carousel"
     >
       <CarouselContent onClick={(e) => e.stopPropagation()}>
-        <CarouselImageWrap>
+        <CarouselImageWrap
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          // we listen global pointerup via capture on element
+          onPointerUp={onPointerUp}
+        >
           {index > 0 && (
             <CarouselNavButton
               style={{ left: '12px', zIndex: 10000 }}
@@ -167,7 +248,6 @@ export default function WinnerCarousel({ year, onClose, winnerImageMap }) {
                 alt={`Winner ${current.year}`}
                 loading="eager"
                 decoding="async"
-                fetchpriority="high"
                 onLoad={() => markLoaded(current.year)}
                 style={{
                   maxWidth: '100%',
