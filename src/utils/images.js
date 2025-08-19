@@ -11,12 +11,12 @@ export const winnerImageMap = {
   2012: '/christmas_winners/winner_2012.jpg',
   2008: '/christmas_winners/winner_2008.jpg',
   2007: '/christmas_winners/winner_2007.jpg',
-  2004: '/christmas_winners/winner_2004.jpg',
   2001: '/christmas_winners/winner_2001.jpg',
   1997: '/christmas_winners/winner_1997.jpg',
   1994: '/christmas_winners/winner_1994.jpg',
   1993: '/christmas_winners/winner_1993.jpg',
   1992: '/christmas_winners/winner_1992.jpg',
+  1991: '/christmas_winners/winner_1991.jpg',
   1990: '/christmas_winners/winner_1990.jpg',
   1989: '/christmas_winners/winner_1989.jpg',
 };
