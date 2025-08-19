@@ -712,7 +712,7 @@ export const CarouselImageWrap = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible; /* changed from hidden so close button (offset outside) is not cropped */
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: #0b2416;
