@@ -11,6 +11,7 @@ export const winnerImageMap = {
   2012: '/christmas_winners/winner_2012.jpg',
   2008: '/christmas_winners/winner_2008.jpg',
   2007: '/christmas_winners/winner_2007.jpg',
+  2004: '/christmas_winners/winner_2004.jpg',
   2001: '/christmas_winners/winner_2001.jpg',
   1997: '/christmas_winners/winner_1997.jpg',
   1994: '/christmas_winners/winner_1994.jpg',
